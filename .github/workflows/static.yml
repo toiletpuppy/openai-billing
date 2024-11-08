@@ -1,30 +1,30 @@
-name: Deploy to GitHub Pages
+name: GitHub Pages Deployment
 
 on:
   push:
     branches:
-      - main  # Trigger on pushes to the main branch
+      - main  # Change this if you use a different default branch
+  workflow_dispatch:
+
+permissions:
+  contents: read  # Allows the workflow to clone the repository
+  pages: write    # Allows the workflow to write to the GitHub Pages site
+  id-token: write # Allows the workflow to authenticate with GitHub
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
-      # Step 1: Check out the repository
-      - name: Checkout Repository
+      - name: Checkout the repository
         uses: actions/checkout@v3
 
-      # Step 2: Set up the deployment directory
-      - name: Prepare Deployment Files
-        run: |
-          mkdir -p deploy
-          cp index.html cloudflare.js deploy/
+      # If you need to build your site (e.g., using a static site generator), add build steps here
+      # Since you're deploying static files, you can skip directly to deploying
 
-      # Step 3: Deploy to GitHub Pages using peaceiris/actions-gh-pages
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload artifact for deployment
+        uses: actions/upload-pages-artifact@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages          # Branch to deploy to
-          publish_dir: ./deploy             # Directory with files to deploy
-          keep_files: false                  # Overwrite existing files
+          path: '.'  # Adjust this if your files are in a subdirectory
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v1
