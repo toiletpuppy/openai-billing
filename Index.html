@@ -6,9 +6,9 @@
   <link rel="icon"
     href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiNGRjQ1MDAiIC8+PC9zdmc+Cg==" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>查询 OpenAI API 余额</title>
+  <title>Check OpenAI API balance</title>
   <meta name="description"
-    content="A quick and easy way to check OpenAI API Key balances, supports multiple key checks.一个快速简便的方式来查询 OpenAI API Key 余额，支持多个 Key 的查询">
+    content="A quick and easy way to check OpenAI API Key balances, supports multiple key checks. A quick and easy way to query the balance of OpenAI API Key, supporting multiple keys">
   <meta name="author" content="ClarenceDan">
   <meta name="github" content="https://github.com/ClarenceDan/openai-billing">
 
@@ -341,27 +341,27 @@
 
 <body>
   <header>
-    <h1 class="text-3xl font-semibold text-center mb-8 text-gradient">查询 OpenAI API 余额</h1>
+    <h1 class="text-3xl font-semibold text-center mb-8 text-gradient">Check OpenAI API balance</h1>
   </header>
 
 
-  <h2>输入 API KEY</h2>
-  <p>本站不保存 KEY 信息，查询后请自行保存</p>
-  <textarea id="api-key-input" placeholder="请输入 API-KEY，必须包含 sk-,多个可直接粘贴"></textarea></p>
-  <!-- API链接选择框 -->
+<h2>Enter API KEY</h2>
+  <p>This site does not save KEY information, please save it yourself after querying</p>
+  <textarea id="api-key-input" placeholder="Please enter API-KEY, must include sk-, multiple can be pasted directly"></textarea></p>
+  <!-- API link selection box -->
   <div class="api-url-container"></div>
-  <!-- API链接选择 -->
-  <h2>选择查询线路</h2>
-  <p>支持自定义线路，官网线路需要魔法</p>
+  <!-- API link selection -->
+  <h2>Select inquiry route</h2>
+  <p>Supports custom lines, official lines require magic</p>
   <select id="api-url-select">
     <option value="https://api.askgptai.tech">【CloudFlare】api.askgptai.tech</option>
-    <option value="https://openai.1rmb.tk">【社区反代】openai.1rmb.tk</option>
-    <option value="https://api.openai.com">【官网线路】api.openai.com</option>
-    <option value="custom">自定义 ...</option>
+    <option value="https://openai.1rmb.tk">【Community anti-generation】openai.1rmb.tk</option>
+    <option value="https://api.openai.com">【Official website line】api.openai.com</option>
+    <option value="custom">Customize ...</option>
   </select>
 
   <!-- 自定义API链接输入框 -->
-  <input type="text" id="custom-url-input" placeholder="输入自定义API，默认使用 https 协议" />
+  <input type="text" id="custom-url-input" placeholder="Enter the custom API, which uses the https protocol by default" />
   </div>
   <button :class="{ loading }" :disabled="loading" onclick="sendRequest()">查询</button> </p>
 
@@ -370,20 +370,20 @@
     <thead>
       <tr>
         <th>API KEY</th>
-        <th style="width: 50px">总额度</th>
-        <th style="width: 50px">已使用</th>
-        <th style="width: 50px">剩余量</th>
-        <th style="width: 60px">到期时间</th>
+        <th style="width: 50px">Total amount</th>
+        <th style="width: 50px">Already used</th>
+        <th style="width: 50px">Remaining amount</th>
+        <th style="width: 60px">Expiration time</th>
         <th style="width: 50px">GPT-4</th>
-        <th style="width: 50px">是否绑卡</th>
+        <th style="width: 50px">Whether to bind the card</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
   <footer>
-    <a href="https://github.com/ClarenceDan/openai-billing">👉前往 Github 查看源码或独立部署👈</a>
+    <a href="https://github.com/ClarenceDan/openai-billing">👉Go to Github to view the source code or deploy independently👈</a>
     <br> <br>
-    <a href="https://aivesa.com/">🍀体验免费直连的 Aivesa 助手🍀</a>
+    <a href="https://aivesa.com/">🍀Experience the free direct-connected Aivesa Assistant🍀</a>
     <p id="ipinfo"></p>
     <script async src="https://umamis.zeabur.app/script.js"
       data-website-id="ffe406f1-6867-4ee0-b14f-d3e9f73b09b7"></script>
@@ -394,7 +394,7 @@
     let queriedApiKeys = [];
 
     async function checkBilling(apiKey, apiUrl) {
-      // 计算起始日期和结束日期,当前为 90 天，最大不超过100天
+      // Calculate the start date and end date, currently 90 days, the maximum is not more than 100 days
       const now = new Date();
       let startDate = new Date(now - 90 * 24 * 60 * 60 * 1000);
       const endDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
@@ -414,7 +414,7 @@
         // 获取API限额
         let response = await fetch(urlSubscription, { headers });
         if (!response.ok) {
-          console.log("APIKEY 错误或账号被封，请登录 OpenAI 查看。");
+          console.log("APIKEY Error or account has been blocked, please log in to OpenAI to view.");
           return;
         }
 
@@ -441,7 +441,7 @@
         const totalUsage = usageData.total_usage / 100;
         let remaining;
         if (currentDate > expiryDate) {
-          remaining = "🔴过期";
+          remaining = "🔴Expired";
         } else {
           remaining = subscriptionData.system_hard_limit_usd - totalUsage;
         }
@@ -471,7 +471,7 @@
       table.style.visibility = "visible";
 
       if (apiKeyInput.value.trim() === "") {
-        alert("请填写API KEY");
+        alert("Please fill in API KEY");
         return;
       }
 
@@ -480,7 +480,7 @@
       let apiUrl = "";
       if (apiUrlSelect.value === "custom") {
         if (customUrlInput.value.trim() === "") {
-          alert("请设置API链接");
+          alert("Please set API link");
           return;
         } else {
           apiUrl = customUrlInput.value.trim();
@@ -495,18 +495,18 @@
       let apiKeys = apiKeyInput.value.split(/[,\s，\n]+/).filter(key => key.startsWith("sk-"));
 
       if (apiKeys.length === 0) {
-        alert("未匹配到 API-KEY，请检查输入内容");
+        alert("API-KEY not matched, please check the input content");
         return;
       }
 
-      alert("成功匹配到 API Key，确认后开始查询：" + apiKeys);
+      alert("The API Key is successfully matched and the query starts after confirmation.：" + apiKeys);
 
       let tableBody = document.querySelector("#result-table tbody");
       for (let i = 0; i < apiKeys.length; i++) {
         let apiKey = apiKeys[i].trim();
 
         if (queriedApiKeys.includes(apiKey)) {
-          console.log(`API KEY ${apiKey} 已查询过，跳过此次查询`);
+          console.log(`API KEY ${apiKey} Already queried, skip this query`);
           continue;
         }
         queriedApiKeys.push(apiKey);
@@ -522,7 +522,7 @@
             let errorMessageCell = document.createElement("td");
             errorMessageCell.colSpan = "5";
             errorMessageCell.classList.add("status-error");
-            errorMessageCell.textContent = "不正确或已失效的API-KEY";
+            errorMessageCell.textContent = "Incorrect or expired API-KEY";
             row.appendChild(errorMessageCell);
           } else {
             let totalGrantedCell = document.createElement("td");
@@ -570,7 +570,7 @@
           errorMessageCell.colSpan = "6";
           errorMessageCell.style.width = "90px";
           errorMessageCell.classList.add("status-error");
-          errorMessageCell.textContent = "账户疑似被封禁，请登录 OpenAI 官网确认";
+          errorMessageCell.textContent = "The account is suspected to be banned, please log in to the OpenAI official website to confirm";
           row.appendChild(errorMessageCell);
 
           tableBody.appendChild(row);
