@@ -23,9 +23,9 @@ jobs:
           publish_branch: gh-pages            # The branch to deploy to
           publish_dir: ./                      # The directory to publish (root in this case)
           # Optionally, you can include specific files:
-          # include: |
-          #   index.html
-          #   cloudflare.js
+          include: |
+             index.html
+             cloudflare.js
         
         # Optional: Configure more settings as needed
         # See https://github.com/peaceiris/actions-gh-pages for more options
