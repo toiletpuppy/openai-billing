@@ -336,7 +336,7 @@
       border: 1px solid #999;
       background-color: #fff;
     }
-  </style>
+  </sty
 </head>
 
 <body>
@@ -344,64 +344,58 @@
     <h1 class="text-3xl font-semibold text-center mb-8 text-gradient">Check OpenAI API balance</h1>
   </header>
 
+  <h2>Enter API KEY</h2>
+  <p>This site does not save API KEY information, please save it yourself after querying.</p>
+  <textarea id="api-key-input" placeholder="Please enter API-KEY, must include sk-, multiple can be pasted directly"></textarea>
 
-<h2>Enter API KEY</h2>
-  <p>This site does not save KEY information, please save it yourself after querying</p>
-  <textarea id="api-key-input" placeholder="Please enter API-KEY, must include sk-, multiple can be pasted directly"></textarea></p>
-  <!-- API link selection box -->
-  <div class="api-url-container"></div>
   <!-- API link selection -->
   <h2>Select inquiry route</h2>
-  <p>Supports custom lines, official lines require magic</p>
+  <p>Supports custom endpoints. Official endpoints may require VPN.</p>
   <select id="api-url-select">
-    <option value="https://api.askgptai.tech">【CloudFlare】api.askgptai.tech</option>
-    <option value="https://openai.1rmb.tk">【Community anti-generation】openai.1rmb.tk</option>
-    <option value="https://api.openai.com">【Official website line】api.openai.com</option>
+    <!-- Removed Cloudflare option -->
+    <option value="https://api.openai.com">【Official】api.openai.com</option>
     <option value="custom">Customize ...</option>
   </select>
 
-  <!-- 自定义API链接输入框 -->
-  <input type="text" id="custom-url-input" placeholder="Enter the custom API, which uses the https protocol by default" />
-  </div>
-  <button :class="{ loading }" :disabled="loading" onclick="sendRequest()">查询</button> </p>
+  <!-- Custom API URL input field -->
+  <input type="text" id="custom-url-input" placeholder="Enter the custom API endpoint (https://...)" />
 
-  <h2 id="result-head" style="visibility:hidden">查询结果</h2>
+  <button onclick="sendRequest()">Query</button>
+
+  <h2 id="result-head" style="visibility:hidden">Query Results</h2>
   <table id="result-table" style="visibility:hidden">
     <thead>
       <tr>
         <th>API KEY</th>
-        <th style="width: 50px">Total amount</th>
-        <th style="width: 50px">Already used</th>
-        <th style="width: 50px">Remaining amount</th>
-        <th style="width: 60px">Expiration time</th>
-        <th style="width: 50px">GPT-4</th>
-        <th style="width: 50px">Whether to bind the card</th>
+        <th>Total Amount</th>
+        <th>Already Used</th>
+        <th>Remaining Amount</th>
+        <th>Expiration Time</th>
+        <th>GPT-4</th>
+        <th>Card Bound</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
+
   <footer>
     <a href="https://github.com/ClarenceDan/openai-billing">👉Go to Github to view the source code or deploy independently👈</a>
-    <br> <br>
+    <br><br>
     <a href="https://aivesa.com/">🍀Experience the free direct-connected Aivesa Assistant🍀</a>
     <p id="ipinfo"></p>
-    <script async src="https://umamis.zeabur.app/script.js"
-      data-website-id="ffe406f1-6867-4ee0-b14f-d3e9f73b09b7"></script>
   </footer>
-
 
   <script>
     let queriedApiKeys = [];
 
     async function checkBilling(apiKey, apiUrl) {
-      // Calculate the start date and end date, currently 90 days, the maximum is not more than 100 days
       const now = new Date();
       let startDate = new Date(now - 90 * 24 * 60 * 60 * 1000);
       const endDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
       const subDate = new Date(now);
       subDate.setDate(1);
 
-      // 设置API请求URL和请求头
+      // Set API request headers
       const headers = {
         "Authorization": "Bearer " + apiKey,
         "Content-Type": "application/json"
@@ -411,10 +405,10 @@
       let urlUsage = `${apiUrl}/v1/dashboard/billing/usage?start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}`;
 
       try {
-        // 获取API限额
+        // Get API limits
         let response = await fetch(urlSubscription, { headers });
         if (!response.ok) {
-          console.log("APIKEY Error or account has been blocked, please log in to OpenAI to view.");
+          console.log("API KEY Error or account has been blocked, please log in to OpenAI to view.");
           return;
         }
 
@@ -480,7 +474,7 @@
       let apiUrl = "";
       if (apiUrlSelect.value === "custom") {
         if (customUrlInput.value.trim() === "") {
-          alert("Please set API link");
+          alert("Please set API endpoint");
           return;
         } else {
           apiUrl = customUrlInput.value.trim();
@@ -495,18 +489,18 @@
       let apiKeys = apiKeyInput.value.split(/[,\s，\n]+/).filter(key => key.startsWith("sk-"));
 
       if (apiKeys.length === 0) {
-        alert("API-KEY not matched, please check the input content");
+        alert("No valid API KEY found, please check the input content");
         return;
       }
 
-      alert("The API Key is successfully matched and the query starts after confirmation.：" + apiKeys);
+      alert("API Key(s) successfully matched. Starting query for: " + apiKeys);
 
       let tableBody = document.querySelector("#result-table tbody");
       for (let i = 0; i < apiKeys.length; i++) {
         let apiKey = apiKeys[i].trim();
 
         if (queriedApiKeys.includes(apiKey)) {
-          console.log(`API KEY ${apiKey} Already queried, skip this query`);
+          console.log(`API KEY ${apiKey} already queried, skipping.`);
           continue;
         }
         queriedApiKeys.push(apiKey);
@@ -520,9 +514,9 @@
 
           if (data[0] === "Error") {
             let errorMessageCell = document.createElement("td");
-            errorMessageCell.colSpan = "5";
+            errorMessageCell.colSpan = "6";
             errorMessageCell.classList.add("status-error");
-            errorMessageCell.textContent = "Incorrect or expired API-KEY";
+            errorMessageCell.textContent = "Incorrect or expired API KEY";
             row.appendChild(errorMessageCell);
           } else {
             let totalGrantedCell = document.createElement("td");
@@ -536,7 +530,6 @@
             let totalAvailableCell = document.createElement("td");
             totalAvailableCell.textContent = typeof data[2] === 'number' ? data[2].toFixed(2) : data[2];
             row.appendChild(totalAvailableCell);
-
 
             let expireTime = document.createElement("td");
             expireTime.textContent = data[3];
@@ -568,7 +561,6 @@
 
           let errorMessageCell = document.createElement("td");
           errorMessageCell.colSpan = "6";
-          errorMessageCell.style.width = "90px";
           errorMessageCell.classList.add("status-error");
           errorMessageCell.textContent = "The account is suspected to be banned, please log in to the OpenAI official website to confirm";
           row.appendChild(errorMessageCell);
@@ -596,11 +588,13 @@
   </script>
 
   <script>
+    // Function to get IP information (optional)
+    // You can remove this script if you don't need it
     function getIpInfo() {
       fetch('https://forge.speedtest.cn/api/location/info')
         .then(res => res.json())
         .then(res => {
-          document.getElementById('ipinfo').textContent = `当前IP: ${res.ip} (${res.province} ${res.city}  ${res.distinct} ${res.isp})  `;
+          document.getElementById('ipinfo').textContent = `Current IP: ${res.ip} (${res.province} ${res.city} ${res.distinct} ${res.isp})`;
         })
         .catch(err => {
           console.log(err);
@@ -608,7 +602,6 @@
     }
 
     getIpInfo();
-
   </script>
 </body>
 
